@@ -215,11 +215,16 @@ app.post('/myfavorate', (req, res) => {
 app.delete('/myfavorate/:username', (req, res) => {
   deleteResult = req.body;
   console.log(deleteResult);
-  var query = "DELETE FROM myFavorate WHERE UserName = '" + deleteResult.UserName + "' AND OwnerName = '" + 
-  deleteResult.Owner + "'";
+  var query = "DELETE FROM myFavorate WHERE UserName = '" + deleteResult.UserName + "' AND OwnerName = '" + deleteResult.Owner + "'";
   con.query(query, (err, result) => {
     if(err) throw err;
     console.log('delete: ', result);
+  });
+
+  con.query("SELECT * FROM myFavorate LEFT JOIN house ON myFavorate.OwnerName = house.UserName LEFT JOIN user ON user.UserName = house.UserName WHERE myFavorate.UserName = '" + 
+  req.params.username + "'", (err, result) => {
+    if (err) throw err;
+    res.send(result);
   });
 })
 

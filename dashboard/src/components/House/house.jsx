@@ -2,13 +2,19 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 class House extends Component {
-  //get
+  //get all house information
   listAll = () => {
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState === 4 && this.status === 200) {
-        var data = JSON.parse(this.responseText);
-        var result = `${data.map(p => `
+    fetch('/house' ,{
+      method: 'get',
+      dataType: 'json',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      let result = `${data.map(p => `
           <div class="list">
             <div>Address: <span>${p.Address}</span></div>
             <div>Price: <span>${p.Price}</span></div>
@@ -22,22 +28,29 @@ class House extends Component {
         document.getElementById("listAll").innerHTML = result;
         document.getElementById("listAll").style.display = "flex";
         document.getElementById("listAll").style.flexWrap = "wrap";
-      }
-    };
-    //get
-    xhttp.open("GET", "http://localhost:3002/house", true);
-    xhttp.send();
+    });
   };
-  //search
+
+  //search house in price range
   search = () => {
     let price = document.querySelectorAll("input[name='range']");
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      // document.getElementById("result").innerHTML = this.responseText;
-      if (this.readyState === 4 && this.status === 200) {
-        var data = JSON.parse(this.responseText);
-        console.log(data);
-        var result = `${data.map(p => `
+    let searchPrice = {
+      "from": price[0].value, 
+      "to": price[1].value
+    };
+
+    fetch('/search' ,{
+      method: 'POST',
+      dataType: 'json',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(searchPrice)
+    })
+    .then(res => res.json())
+    .then(data => {
+      let result = `${data.map(p => `
           <div class="result">
             <div>Address: <span>${p.Address}</span></div>
             <div>Price: <span>${p.Price}</span></div>
@@ -51,27 +64,30 @@ class House extends Component {
         document.getElementById("resultAll").innerHTML = result;
         document.getElementById("resultAll").style.display = "flex";
         document.getElementById("resultAll").style.flexWrap = "wrap";
-      }
-    };
-    xhttp.open("POST", "http://localhost:3002/search", true);
-    xhttp.setRequestHeader("Content-type", "application/json");
-    let searchPrice = {
-      "from": price[0].value, 
-      "to": price[1].value
-    };
-    xhttp.send(JSON.stringify(searchPrice));
+    });
   };
 
-  //searchGender
+  //search roommate by gender
   searchGender = () => {
     let gender = document.getElementsByClassName("gender")[0];
     let genderAccept = document.getElementsByClassName("gender-accept")[0];
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState === 4 && this.status === 200) {
-        var data = JSON.parse(this.responseText);
-        console.log(data);
-        var result = `${data.map(p => `
+    let searchGender = {
+      "gender": gender.value, 
+      "genderAccept": genderAccept.value
+    };
+
+    fetch('/searchGender' ,{
+      method: 'POST',
+      dataType: 'json',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(searchGender)
+    })
+    .then(res => res.json())
+    .then(data => {
+      let result = `${data.map(p => `
           <div class="result">
             <div>UserName: <span>${p.UserName}</span></div>
             <div>Gender: <span>${p.Gender}</span></div>
@@ -85,15 +101,7 @@ class House extends Component {
         document.getElementById("genderresult").innerHTML = result;
         document.getElementById("genderresult").style.display = "flex";
         document.getElementById("genderresult").style.flexWrap = "wrap";
-      }
-    };
-    xhttp.open("POST", "http://localhost:3002/searchGender", true);
-    xhttp.setRequestHeader("Content-type", "application/json");
-    let searchGender = {
-      "gender": gender.value, 
-      "genderAccept": genderAccept.value
-    };
-    xhttp.send(JSON.stringify(searchGender));
+    });
   };
 
   render() {
