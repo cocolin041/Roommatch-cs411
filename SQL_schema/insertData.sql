@@ -1,0 +1,1 @@
+INSERT INTO  `house` (`Address`, `Price`, `Type`, `User_id`) VALUES ('105 S Wright St', 500, '2B1B', '123');
