@@ -1,32 +1,10 @@
 import React, { Component } from 'react';
+import './posted.css';
+import Post from '../Post/post';
+import Edit_Delete from '../Edit_Delete.js';
+import searchUserFun from '../searchUser.js';
 
-//you had posted a house => show your house
-function YourHouse(data) {
-  return (
-    `<div class="list">
-      <div>Address: <span>${data.Address}</span></div>
-      <div>Price: <span>${data.Price}</span></div>
-      <div>Type: <span>${data.Type}</span></div>
-      <div>Rooms Available: <span>${data.Availability}</span></div>
-      <div><img src=${data.img}/></div>
-      <div>Pet allowed: <span>${data.Pet}</span></div>
-      <div>Smoke allowed: <span>${data.Smoke}</span></div>
-      <div>Gender accepted: <span>${data.GenderAccept}</span></div>
-    </div>`)
-};
 
-//you had posted roommate information => show your roommate preference
-function YourInfo(data) {
-  return (
-    `<div class="list">
-      <div>Price: <span>${data.PriceLower}~${data.PriceUpper}</span></div>
-      <div>Personal Bathroom: <span>${data.Bathroom}</span></div>
-      <div>Need:<span>${data.RoomNeed} Rooms</span></div>
-      <div>Have Pet: <span>${data.Pet}</span></div>
-      <div>Smoke: <span>${data.Smoke}</span></div>
-      <div>Gender accepted: <span>${data.GenderAccept}</span></div>
-    </div>`)
-};
 
 //you had posted roommate information => show you recommended house
 function HouseRecommend(props) {
@@ -160,68 +138,22 @@ function PersonRecommend(props) {
   })
   .then(res => res.json())
   .then(roommate => {
-    let result = `${roommate.map(data => `
-        <div>
-          <div>UserName: <span>${data.UserName}</span></div>
-          <div>Price: <span>${data.PriceLower}~${data.PriceUpper}</span></div>
-          <div>Personal Bathroom: <span>${data.Bathroom}</span></div>
-          <div>Need:<span>${data.RoomNeed} Rooms</span></div>
-          <div>Have Pet: <span>${data.Pet}</span></div>
-          <div>Smoke: <span>${data.Smoke}</span></div>
-          <div>Gender accepted: <span>${data.GenderAccept}</span></div>
-          <button type="button" onClick={edit}>Edit</button>
-          <button type="button" onclick="del(event)">Delete</button>
-        </div>`)}`;
-    document.getElementsByClassName("roommate")[0].innerHTML = result;
+    if (roommate.length > 0) {
+      let result = `${roommate.map(data => `
+          <div>
+            <div>UserName: <span>${data.UserName}</span></div>
+            <div>Price: <span>${data.PriceLower}~${data.PriceUpper}</span></div>
+            <div>Personal Bathroom: <span>${data.Bathroom}</span></div>
+            <div>Need:<span>${data.RoomNeed} Rooms</span></div>
+            <div>Have Pet: <span>${data.Pet}</span></div>
+            <div>Smoke: <span>${data.Smoke}</span></div>
+            <div>Gender accepted: <span>${data.GenderAccept}</span></div>
+          </div>`)}`;
+      document.getElementsByClassName("roommate")[0].innerHTML = result;
+    }
   });
   return (
     <div class="roommate"></div>
-  );
-};
-
-// if you had select favorate
-function Favorate(props) {
-  let dislike = (e) => {
-    let owner = e.target.nextElementSibling.children[0].innerHTML;
-    let myFavorate = {
-      "UserName": props.name,
-      "Owner": owner
-    };
-
-    fetch('/myfavorate/' + props.name ,{
-      method: 'delete',
-      dataType: 'json',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(myFavorate)
-    })
-    .then(res => res.json())
-    .then(data => {
-      let result = `${data.map(p => `
-          <div>
-            <button class="dislike">DisLike</button>
-            <div>UserName: <span>${p.OwnerName}</span></div>
-            <div>Owner Gender: <span>${p.Gender}</span></div>
-            <div>Address: <span>${p.Address}</span></div>
-            <div>Price: <span>${p.Price}</span></div>
-            <div>Type: <span>${p.Type}</span></div>
-            <div>Rooms Available: <span>${p.Availability}</span></div>
-            <div>Pet allowed: <span>${p.Pet}</span></div>
-            <div>Smoke allowed: <span>${p.Smoke}</span></div>
-            <div>Gender accepted: <span>${p.GenderAccept}</span></div>
-            <img src=${p.img} height="500" width="500"/>
-          </div>`)}`;
-      document.getElementsByClassName("myfavorate")[0].innerHTML = result;
-      document.getElementsByClassName("myfavorate")[0].style.display = "flex";
-      document.getElementsByClassName("myfavorate")[0].style.flexWrap = "wrap";
-      let dislikebutton = document.getElementsByClassName("dislike");
-      Array.prototype.map.call(dislikebutton, p=>p.addEventListener("click", dislike));
-    });
-  };
-  return (
-    <div class="myfavorate"></div>
   );
 };
 
@@ -233,84 +165,41 @@ class Posted extends React.Component {
         renderPost: false,
         editing: false,
         oldHouse: {},
-        test: false
+        postNum: 0,
+        post: ''
       };
       this.renderPost = this.renderPost.bind(this);
       this.edit = this.edit.bind(this);
       this.update = this.update.bind(this);
       this.del = this.del.bind(this);
-      
     };
-    // edit function
-    edit = e => {
-      this.setState({editing: true});
-      let list = e.target.parentElement.parentElement.parentElement;
-      let childs = list.children[1].children[0].children[0];
-      let house = {
-        "Address": childs.children[0].children[0].innerHTML,
-        "Price": childs.children[1].children[0].innerHTML,
-        "Type": childs.children[2].children[0].innerHTML,
-        "Availability": childs.children[3].children[0].innerHTML,
-        "img": childs.children[4].children[0].src,
-        "Pet": childs.children[5].children[0].innerHTML,
-        "Smoke": childs.children[6].children[0].innerHTML,
-        "GenderAccept": childs.children[7].children[0].innerHTML
-      };
-      var editing = `
-            <div class="list">
-              <div>Address: <input type="text" name="edit-address" value="${house.Address}"/></div>
-              <div>Price: <input type="number" name="edit-price" value="${house.Price}" /></div>
-              <div>Type: <input type="text" name="edit-type"  placeholder="2B1B" value="${house.Type}" /></div>
-              <div>Available Spaces: <input type="text" name="edit-available"  placeholder="2b" value="${house.Availability}" /></div>
-              <div>Image: <input type="text" name="edit-img" value="${house.img}" /></div>
-          </div>`;
-      list.children[1].children[0].innerHTML = editing;
-      this.setState({oldHouse: house});
+
+    edit = (e) => {
+      Edit_Delete.edit(e, this);
     };
-    //update
-    done = () => {
-      let house = {
-        "Address": document.querySelector("input[name='edit-address']").value,
-        "Price": document.querySelector("input[name='edit-price']").value,
-        "Type": document.querySelector("input[name='edit-type']").value
-      }
-      return house;
-    };
-  
     update = () => {
-      let newHouse = this.done();
-      let House = {
-        "newHouse": newHouse
-      };
-      fetch('/update/' + this.props.name ,{
-        method: 'POST',
-        dataType: 'json',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(House)
-      })
-      .then(res => res.json());
-      this.setState({editing: false});
-    }
-  
-    //delete
-    del = () => {
-      fetch('/delete/' + this.props.name ,{
-        method: 'delete'
-      })
-      .then(res => res.json());
+      Edit_Delete.update(this);
     };
-  
+    del = () => {
+      Edit_Delete.del(this.props.name, this);
+    };
+
+    searchUser = () => {
+      let username = this.props.name;
+      searchUserFun.searchUser(username, this);
+    }
+
     //render your post => house information / roommate information
     renderPost = () => {
       if (!this.state.renderPost) {
         let obj = this;
         let result;
-  
+
+        // fetch user information
+        this.searchUser();
+        
         //house information
-        if (this.props.post === "sublease") {
+        if (this.state.post === "sublease") {
           fetch('/house/' + this.props.name ,{
             method: 'GET',
             dataType: 'json',
@@ -321,14 +210,20 @@ class Posted extends React.Component {
           })
           .then(res => res.json())
           .then(data => {
-            obj.setState({data: data[0]});
-            result = YourHouse(data[0]);
-            document.getElementsByClassName("list")[0].innerHTML = result;
+            if (data.length > 0) {
+              obj.setState({data: data[0], postNum: data.length});
+              result = Edit_Delete.YourHouse(data[0]);
+              document.getElementsByClassName("content")[0].innerHTML = result;
+              let edit_button = document.getElementsByClassName("edit")[0];
+              let del_button = document.getElementsByClassName("del")[0];
+              edit_button.addEventListener("click", this.edit);
+              del_button.addEventListener("click", this.del);
+            }
             this.setState({renderPost: true});
           });
         }
         //roommate information
-        if (this.props.post === "roommate") {
+        if (this.state.post === "roommate") {
           fetch('/roommate/' + this.props.name ,{
             method: 'GET',
             dataType: 'json',
@@ -340,8 +235,12 @@ class Posted extends React.Component {
           .then(res => res.json())
           .then(data => {
             obj.setState({data: data[0]});
-            result = YourInfo(data[0]);
-            document.getElementsByClassName("list")[0].innerHTML = result;
+            result = Edit_Delete.YourInfo(data[0]);
+            document.getElementsByClassName("content")[0].innerHTML = result;
+            let edit_button = document.getElementsByClassName("edit")[0];
+            let del_button = document.getElementsByClassName("del")[0];
+            edit_button.addEventListener("click", this.edit);
+            del_button.addEventListener("click", this.del);
             this.setState({renderPost: true});
           });
         }
@@ -349,33 +248,30 @@ class Posted extends React.Component {
     }
 
     render() {
-      // this.renderPost();
-  
+      this.renderPost();
       return (
         <div>
-          <div class="list">{this.renderPost()}</div>
-          {!this.state.editing ? (
+          {this.state.postNum > 0 ? (
             <div>
-              <button type="button" onClick={this.edit}>Edit</button>
-              <button type="button" onClick={this.del}>Delete</button>
+              <h2>Your Post</h2>
+              <div class="content"></div>
+              <div>
+                <h2>Recommendation</h2>
+                    {this.state.post === "roommate" ? (
+                      <HouseRecommend data={this.state.data} gender={this.props.gender} name={this.props.name}/>
+                    ):(
+                      <PersonRecommend data={this.state.data} gender={this.props.gender} name={this.props.name}/>
+                    )}
+              </div>
+              <div>
+                {/* <h2>myFavorate</h2> */}
+                {/* <Favorate name={this.props.name}/> */}
+              </div>  
             </div>
-          ) : (
-            <div>
-              <button type="button" onClick={this.update}>Done</button>
-            </div>
+          ):(
+            <Post name={this.props.name}/>
           )}
-          <div>
-            <h2>Recommendation</h2>
-                {this.props.post === "roommate" ? (
-                  <HouseRecommend data={this.state.data} gender={this.props.gender} name={this.props.name}/>
-                ):(
-                  <PersonRecommend data={this.state.data} gender={this.props.gender} name={this.props.name}/>
-                )}
-          </div>
-          <div>
-            <h2>myFavorate</h2>
-            <Favorate name={this.props.name}/>
-          </div>
+          
         </div>
       );
     }

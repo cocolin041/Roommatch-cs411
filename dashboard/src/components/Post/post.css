@@ -1,0 +1,15 @@
+.insert {
+  margin: 0 50px;
+}
+.form > div {
+  margin: 20px 0;
+}
+.form > div > div {
+  margin: 20px 0;
+}
+
+#address-warn, #price-warn, #type-warn, #space-warn {
+  display: none;
+  color: red;
+  margin-left: 5px;
+}
