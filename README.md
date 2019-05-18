@@ -1,12 +1,16 @@
 # Roommatch
+https://cs411-roommatch.herokuapp.com/
 
 ## Frontend
-framework: React
-directory: /dashboard/src/components
+tools: React<br/>
+file: /dashboard/src/
 
 ## Backend
-framework: Nodejs
-directory: /server/demo_db_connection.js
+tools: Nodejs<br/>
+file: demo_db_connection.js
 
 ## DataBase
-mySQL
+MySQL, Firebase
+
+## Cloud
+Heroku
