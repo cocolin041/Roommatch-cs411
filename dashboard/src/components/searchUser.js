@@ -3,7 +3,6 @@
 module.exports = {
   searchUser: (user, component, password) => {
     let warn = document.getElementsByClassName("warn")[0];
-    console.log("hello");
     let loginBtn = document.getElementsByClassName("loginBtn")[0];
     let createBtn = document.getElementsByClassName("createBtn")[0];
 

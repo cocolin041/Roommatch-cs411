@@ -90,7 +90,6 @@ class House extends Component {
       {!this.props.location.isLoggedIn ? (
         <div className="nav">
           <ul>
-            {/* <li>House</li> */}
             <li><Link to="/user">Login</Link></li>
             <li><Link to="/roommate">Find Roommate</Link></li>
           </ul>
@@ -98,7 +97,6 @@ class House extends Component {
       ):(
         <div className="nav">
           <ul>
-            {/* <li>House</li> */}
             <li><Link to={{pathname: "/", isLoggedIn: false}} >Logout</Link></li>
             <li><Link to={{pathname: "/roommate", isLoggedIn: false}}>Find Roommate</Link></li>
           </ul>
