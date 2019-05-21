@@ -4,7 +4,7 @@ import Posted from '../Posted/posted';
 import Post from '../Post/post';
 import './login.css';
 import UserFun from '../searchUser.js';
-// import { Link } from 'react-router-dom';
+import logo from '../../logo.png';
 
 class Login extends React.Component {
   constructor(props) {
@@ -42,10 +42,13 @@ class Login extends React.Component {
         {!this.state.isLoggedIn ? (
           <div>
             <div className="nav">
-              <ul>
-                <li><Link to="/">House</Link></li>
-                <li><Link to="/roommate">Find Roommate</Link></li>
-              </ul>
+              <div>
+                <img src={logo} alt="logo"/>
+              </div>
+              <div>
+                <Link to="/" className="link">House</Link>
+                <Link to="/roommate" className="link">Find Roommate</Link>
+              </div>
             </div>
             <div className="login">
               <div>Username:<input type="text" name="username"/></div>
@@ -58,11 +61,14 @@ class Login extends React.Component {
         ) : (
           <div>
             <div className="nav">
-              <ul>
-                <li onClick={this.logout}>Logout</li>
-                <li><Link to={{pathname: "/", isLoggedIn: true}}>House</Link></li>
-                <li><Link to={{pathname: "/roommate", isLoggedIn: true}}>Find Roommate</Link></li>
-              </ul>
+              <div>
+                <img src={logo} alt="logo"/>
+              </div>
+              <div>
+                <span className="link" onClick={this.logout}>Logout</span>
+                <Link className="link" to={{pathname: "/", isLoggedIn: true}}>House</Link>
+                <Link className="link" to={{pathname: "/roommate", isLoggedIn: true}}>Find Roommate</Link>
+              </div>
             </div>
             {/* if this is new user or has no post yet => create post */}
             {this.state.newUser || this.state.post === '' ? (

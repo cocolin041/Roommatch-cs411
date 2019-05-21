@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import './house.css';
+import logo from '../../logo.png';
 
 class House extends Component {
   constructor(props) {
@@ -89,17 +90,23 @@ class House extends Component {
       <div className="House">
       {!this.props.location.isLoggedIn ? (
         <div className="nav">
-          <ul>
-            <li><Link to="/user">Login</Link></li>
-            <li><Link to="/roommate">Find Roommate</Link></li>
-          </ul>
+          <div>
+            <img src={logo} alt="logo"/>
+          </div>
+          <div>
+            <Link to="/user" className="link">Login</Link>
+            <Link to="/roommate" className="link">Find Roommate</Link>
+          </div>
         </div>
       ):(
         <div className="nav">
-          <ul>
-            <li><Link to={{pathname: "/", isLoggedIn: false}} >Logout</Link></li>
-            <li><Link to={{pathname: "/roommate", isLoggedIn: false}}>Find Roommate</Link></li>
-          </ul>
+          <div>
+            <img src={logo} alt="logo"/>
+          </div>
+          <div>
+            <Link to={{pathname: "/", isLoggedIn: false}} >Logout</Link>
+            <Link to={{pathname: "/roommate", isLoggedIn: false}}>Find Roommate</Link>
+          </div>
         </div>
       )}
         

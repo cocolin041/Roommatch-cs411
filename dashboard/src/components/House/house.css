@@ -3,17 +3,27 @@
 } */
 .nav  {
   border-bottom: 1px solid grey;
-}
-.nav > ul{
+  height: 100px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
 }
-.nav > ul > li {
-  list-style-type: none;
+.nav > div:nth-child(1) {
+  height: 100%;
   margin: 0 20px;
 }
-.nav > ul > li:hover {
-  border-bottom: 1px solid black;
+.nav > div > img {
+  height: 100%;
+}
+.link {
+  margin: 0 20px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: bold;
+}
+.link:hover {
+  font-size: 18px;
+  /* border-bottom: 1px solid black; */
 }
 .content {
   position: relative;
